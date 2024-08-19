@@ -1,38 +1,54 @@
 import React from 'react';
-import { Card, Page, Layout, Spinner, TextContainer } from '@shopify/polaris';
+import { Card, Layout, Page, Text, Spinner } from '@shopify/polaris';
 import { useParams } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 
 const PostDetail = () => {
-    const { postId } = useParams();
+    const { id } = useParams();
     const { posts, comments } = useUserContext();
-
-    const post = posts.find(post => post.id === parseInt(postId));
-    const postComments = comments.filter(comment => comment.postId === parseInt(postId));
+    const post = posts.find(post => post.id === parseInt(id));
+    const postComments = comments.filter(comment => comment.postId === parseInt(id));
 
     if (!post) return <Spinner />;
 
     return (
-        <Page title="Post Details">
+        <Page title={`Post: ${post.title}`}>
             <Layout>
                 <Layout.Section>
-                    <Card sectioned title={post.title}>
-                        <TextContainer>
-                            <p>{post.body}</p>
-                        </TextContainer>
+                    <Card sectioned>
+                        <Text variant="headingMd" as="h2">Post Information</Text>
+                        <div style={{ padding: '16px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+                            <Text variant="bodyMd" as="p">
+                                <strong>Title:</strong> {post.title}
+                            </Text>
+                            <Text variant="bodyMd" as="p">
+                                <strong>Body:</strong> {post.body}
+                            </Text>
+                        </div>
                     </Card>
                 </Layout.Section>
-                <Layout.Section secondary>
-                    <Card sectioned title="Comments">
+
+                <Layout.Section>
+                    <Card sectioned>
+                        <Text variant="headingMd" as="h3">Comments</Text>
                         {postComments.length > 0 ? (
-                            postComments.map(comment => (
-                                <Card key={comment.id} sectioned title={comment.name}>
-                                    <p>{comment.body}</p>
-                                    <p><strong>By:</strong> {comment.email}</p>
-                                </Card>
-                            ))
+                            <div style={{ padding: '16px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+                                {postComments.map(comment => (
+                                    <Card key={comment.id} sectioned style={{ marginBottom: '16px' }}>
+                                        <Text variant="bodyMd" as="p">
+                                            <strong>{comment.name}</strong>
+                                        </Text>
+                                        <Text variant="bodySm" as="p">
+                                            {comment.body}
+                                        </Text>
+                                        <Text variant="bodySm" as="p">
+                                            <em>— {comment.email}</em>
+                                        </Text>
+                                    </Card>
+                                ))}
+                            </div>
                         ) : (
-                            <p>No comments available.</p>
+                            <Text variant="bodyMd" as="p">No comments yet.</Text>
                         )}
                     </Card>
                 </Layout.Section>
