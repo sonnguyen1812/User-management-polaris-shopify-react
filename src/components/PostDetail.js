@@ -1,54 +1,46 @@
-import React from 'react';
-import { Card, Layout, Page, Text, Spinner } from '@shopify/polaris';
+import React, { useEffect, useState } from 'react';
+import { Card, Layout, Text, Spinner, Page } from '@shopify/polaris';
 import { useParams } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 
 const PostDetail = () => {
-    const { id } = useParams();
+    const { userId, postId } = useParams();
     const { posts, comments } = useUserContext();
-    const post = posts.find(post => post.id === parseInt(id));
-    const postComments = comments.filter(comment => comment.postId === parseInt(id));
+    const [post, setPost] = useState(null);
+    const [postComments, setPostComments] = useState([]);
+
+    useEffect(() => {
+        const selectedPost = posts.find(post => post.id === parseInt(postId));
+        if (selectedPost) {
+            setPost(selectedPost);
+            setPostComments(comments.filter(comment => comment.postId === parseInt(postId)));
+        }
+    }, [postId, posts, comments]);
 
     if (!post) return <Spinner />;
 
     return (
-        <Page title={`Post: ${post.title}`}>
+        <Page title="Post Details">
             <Layout>
                 <Layout.Section>
-                    <Card sectioned>
-                        <Text variant="headingMd" as="h2">Post Information</Text>
-                        <div style={{ padding: '16px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
-                            <Text variant="bodyMd" as="p">
-                                <strong>Title:</strong> {post.title}
-                            </Text>
-                            <Text variant="bodyMd" as="p">
-                                <strong>Body:</strong> {post.body}
-                            </Text>
-                        </div>
+                    <Card title="Post Information" sectioned>
+                        <p><Text variation="strong">Title:</Text> {post.title}</p>
+                        <p><Text variation="strong">Body:</Text> {post.body}</p>
                     </Card>
                 </Layout.Section>
 
                 <Layout.Section>
-                    <Card sectioned>
-                        <Text variant="headingMd" as="h3">Comments</Text>
+                    <Card title="Comments" sectioned>
                         {postComments.length > 0 ? (
-                            <div style={{ padding: '16px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
-                                {postComments.map(comment => (
-                                    <Card key={comment.id} sectioned style={{ marginBottom: '16px' }}>
-                                        <Text variant="bodyMd" as="p">
-                                            <strong>{comment.name}</strong>
-                                        </Text>
-                                        <Text variant="bodySm" as="p">
-                                            {comment.body}
-                                        </Text>
-                                        <Text variant="bodySm" as="p">
-                                            <em>— {comment.email}</em>
-                                        </Text>
-                                    </Card>
-                                ))}
-                            </div>
+                            postComments.map(comment => (
+                                <Card key={comment.id} sectioned>
+                                    <p><Text variation="strong">Name:</Text> {comment.name}</p>
+                                    <p><Text variation="strong">Email:</Text> {comment.email}</p>
+                                    <p><Text variation="strong">Comment:</Text> {comment.body}</p>
+                                </Card>
+                            ))
                         ) : (
-                            <Text variant="bodyMd" as="p">No comments yet.</Text>
+                            <p>No comments available.</p>
                         )}
                     </Card>
                 </Layout.Section>
