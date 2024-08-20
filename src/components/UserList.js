@@ -1,28 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { Card, ResourceList, Spinner } from '@shopify/polaris';
-import { useUserContext } from '../contexts/UserContext';
+import React from 'react';
+import {Button, Card, ResourceList, Text} from '@shopify/polaris';
 import { useNavigate } from 'react-router-dom';
 
-const UserList = () => {
-    const { users, loading } = useUserContext();
+const UserList = ({ users, onEdit, onDelete }) => {
     const navigate = useNavigate();
 
-    if (loading) return <Spinner />;
-
     return (
-        <Card>
+        <Card title={`Users (${users.length})`}>
             <ResourceList
                 resourceName={{ singular: 'user', plural: 'users' }}
                 items={users}
-                renderItem={(item) => {
-                    const { id, name, email } = item;
+                totalItemsCount={users.length} // Hiển thị tổng số lượng người dùng
+                renderItem={(user) => {
+                    const { id, name, email } = user;
+
                     return (
                         <ResourceList.Item
-                            key={id}
-                            onClick={() => navigate(`/user/${id}`)}
+                            id={id}
+                            accessibilityLabel={`View details for ${name}`}
+                            onClick={() => navigate(`/user/${id}`)} // Điều hướng khi bấm vào bất kỳ đâu
                         >
-                            <h3>{name}</h3>
+                            <h3>
+                                <Text variation="strong">{name}</Text>
+                            </h3>
                             <div>{email}</div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                <Button size="slim" onClick={(e) => { e.stopPropagation(); onEdit(user); }}>Edit</Button>
+                                <Button size="slim" destructive onClick={(e) => { e.stopPropagation(); onDelete(id); }}>Delete</Button>
+                            </div>
                         </ResourceList.Item>
                     );
                 }}

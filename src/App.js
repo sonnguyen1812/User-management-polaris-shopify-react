@@ -14,7 +14,7 @@ function App() {
       <AppProvider
           i18n={{}}
       >
-        <Router>
+
           <MainLayout>
           <Frame>
             <Routes>
@@ -26,7 +26,7 @@ function App() {
             </Routes>
           </Frame>
             </MainLayout>
-        </Router>
+
       </AppProvider>
   );
 }

@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './contexts/UserContext';
 import axios from 'axios';
 import '@shopify/polaris/build/esm/styles.css';
-
+import {BrowserRouter} from "react-router-dom";
 
 const fetchData = async (url) => {
     const response = await axios.get(url);
@@ -23,9 +23,13 @@ const fetchData = async (url) => {
         const todos = await fetchData('https://jsonplaceholder.typicode.com/todos');
 
         ReactDOM.createRoot(document.getElementById('root')).render(
+            <React.StrictMode>
+                <BrowserRouter>
                     <UserProvider initialData={{ users, posts, comments, albums, photos, todos }}>
                         <App />
                     </UserProvider>
+                </BrowserRouter>
+            </React.StrictMode>
         );
     } catch (error) {
         console.error('Error fetching data:', error);

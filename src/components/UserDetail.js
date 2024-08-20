@@ -6,11 +6,11 @@ import { useUserContext } from '../contexts/UserContext';
 const UserDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { users, posts, albums } = useUserContext();
+    const { users, posts, albums, todos } = useUserContext();
     const user = users.find(user => user.id === parseInt(id));
     const userPosts = posts.filter(post => post.userId === parseInt(id));
     const userAlbums = albums.filter(album => album.userId === parseInt(id));
-    // const userTodos = todos.filter(todo => todo.userId === parseInt(id));
+    const userTodos = todos.filter(todo => todo.userId === parseInt(id));
 
     if (!user) return <Spinner />;
 
