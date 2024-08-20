@@ -12,8 +12,16 @@ export const UserProvider = ({ children, initialData }) => {
     const [comments, setComments] = useState(initialData.comments || []);
     const [photos, setPhotos] = useState(initialData.photos || []);
 
+    const addUser = (user) => {
+        setUsers(prevUsers => [...prevUsers, user]);
+    };
+
+    const deleteUser = (userId) => {
+        setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+    };
+
     return (
-        <UserContext.Provider value={{ users, setUsers, posts, setPosts, albums, setAlbums, todos, setTodos, comments, setComments, photos, setPhotos }}>
+        <UserContext.Provider value={{ users, setUsers, posts, setPosts, albums, setAlbums, todos, setTodos, comments, setComments, photos, setPhotos, addUser, deleteUser }}>
             {children}
         </UserContext.Provider>
     );

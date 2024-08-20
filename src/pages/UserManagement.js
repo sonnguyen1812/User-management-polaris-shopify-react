@@ -1,41 +1,66 @@
-import React from 'react';
-import { Card, Layout, ResourceList, Avatar, Text } from '@shopify/polaris';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Page, Layout, Button, Card, Spinner } from '@shopify/polaris';
+import UserList from '../components/UserList';
+import UserForm from '../components/UserForm';
 import { useUserContext } from '../contexts/UserContext';
 
 const UserManagement = () => {
-    const { users } = useUserContext();
-    const navigate = useNavigate();
+    const { users, setUsers } = useUserContext();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const handleCreate = () => {
+        setSelectedUser(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEdit = (user) => {
+        setSelectedUser(user);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (id) => {
+        setUsers(users.filter(user => user.id !== id));
+    };
+
+    const handleSave = (userData) => {
+        if (selectedUser) {
+            // Update existing user
+            setUsers(users.map(user => user.id === selectedUser.id ? { ...user, ...userData } : user));
+        } else {
+            // Create new user
+            const newUser = { id: users.length + 1, ...userData };
+            setUsers([...users, newUser]);
+        }
+        setIsModalOpen(false);
+    };
+
+    if (!users) return <Spinner />;
 
     return (
-        <Layout>
-            <Layout.Section>
-                <Card title="Users">
-                    <ResourceList
-                        resourceName={{ singular: 'user', plural: 'users' }}
-                        items={users}
-                        renderItem={(user) => {
-                            const { id, name, email } = user;
-                            const media = <Avatar customer size="medium" name={name} />;
-
-                            return (
-                                <ResourceList.Item
-                                    id={id}
-                                    media={media}
-                                    accessibilityLabel={`View details for ${name}`}
-                                    onClick={() => navigate(`/user/${id}`)}
-                                >
-                                    <h3>
-                                        <Text variation="strong">{name}</Text>
-                                    </h3>
-                                    <div>{email}</div>
-                                </ResourceList.Item>
-                            );
-                        }}
+        <Page title="User Management">
+            <Layout>
+                <Layout.Section>
+                    <Button primary onClick={handleCreate}>Create New User</Button>
+                </Layout.Section>
+                <Layout.Section>
+                    <UserList
+                        users={users}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
                     />
-                </Card>
-            </Layout.Section>
-        </Layout>
+                </Layout.Section>
+            </Layout>
+
+            {isModalOpen && (
+                <UserForm
+                    open={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSave={handleSave}
+                    initialData={selectedUser}
+                />
+            )}
+        </Page>
     );
 };
 

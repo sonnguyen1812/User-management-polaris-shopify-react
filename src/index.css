@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.Polaris-Button {
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.Polaris-Button--plain {
+  border: 1px solid transparent;
+  padding: 4px 8px;
+}
+
+.Polaris-Button--destructive {
+  background-color: #d9534f;
+  color: white;
+}
+
+.Polaris-Button--destructive:hover {
+  background-color: #c9302c;
+}
