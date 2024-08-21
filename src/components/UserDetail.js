@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Layout, Text, OptionList, Spinner, Page, Button, Modal } from '@shopify/polaris';
+import { Card, Layout, Text, Page, Button, Checkbox, Modal } from '@shopify/polaris';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 import ItemForm from './ItemForm';
@@ -13,45 +13,39 @@ const UserDetail = () => {
     const userAlbums = albums.filter(album => album.userId === parseInt(id));
     const userTodos = todos.filter(todo => todo.userId === parseInt(id));
 
-    const [selectedPost, setSelectedPost] = useState(null);
-    const [selectedAlbum, setSelectedAlbum] = useState(null);
-    const [selectedTodo, setSelectedTodo] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
 
-    if (!user) return <Spinner />;
+    if (!user) return <p>User not found</p>;
 
     const handleOpenModal = (type, item = null) => {
         setModalType(type);
-        if (type === 'post') setSelectedPost(item);
-        if (type === 'album') setSelectedAlbum(item);
-        if (type === 'todo') setSelectedTodo(item);
+        setSelectedItem(item);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedPost(null);
-        setSelectedAlbum(null);
-        setSelectedTodo(null);
+        setSelectedItem(null);
     };
 
     const handleSave = (data) => {
         if (modalType === 'post') {
-            if (selectedPost) {
-                setPosts(posts.map(post => post.id === selectedPost.id ? { ...post, ...data } : post));
+            if (selectedItem) {
+                setPosts(posts.map(post => post.id === selectedItem.id ? { ...post, ...data } : post));
             } else {
                 setPosts([...posts, { ...data, userId: parseInt(id), id: posts.length + 1 }]);
             }
         } else if (modalType === 'album') {
-            if (selectedAlbum) {
-                setAlbums(albums.map(album => album.id === selectedAlbum.id ? { ...album, ...data } : album));
+            if (selectedItem) {
+                setAlbums(albums.map(album => album.id === selectedItem.id ? { ...album, ...data } : album));
             } else {
                 setAlbums([...albums, { ...data, userId: parseInt(id), id: albums.length + 1 }]);
             }
         } else if (modalType === 'todo') {
-            if (selectedTodo) {
-                setTodos(todos.map(todo => todo.id === selectedTodo.id ? { ...todo, ...data } : todo));
+            if (selectedItem) {
+                setTodos(todos.map(todo => todo.id === selectedItem.id ? { ...todo, ...data } : todo));
             } else {
                 setTodos([...todos, { ...data, userId: parseInt(id), id: todos.length + 1 }]);
             }
@@ -59,15 +53,17 @@ const UserDetail = () => {
         handleCloseModal();
     };
 
-    const handleDelete = (type, id) => {
-        if (type === 'post') setPosts(posts.filter(post => post.id !== id));
-        if (type === 'album') setAlbums(albums.filter(album => album.id !== id));
-        if (type === 'todo') setTodos(todos.filter(todo => todo.id !== id));
+    const handleDelete = (type, itemId) => {
+        if (type === 'post') setPosts(posts.filter(post => post.id !== itemId));
+        if (type === 'album') setAlbums(albums.filter(album => album.id !== itemId));
+        if (type === 'todo') setTodos(todos.filter(todo => todo.id !== itemId));
     };
 
-    const postOptions = userPosts.map(post => ({ label: post.title, value: post.id }));
-    const albumOptions = userAlbums.map(album => ({ label: album.title, value: album.id }));
-    const todoOptions = [{ label: 'View Todos', value: 'todos' }];
+    const handleTodoCompletion = (todoId) => {
+        setTodos(todos.map(todo =>
+            todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+        ));
+    };
 
     return (
         <Page title="User Details">
@@ -86,33 +82,89 @@ const UserDetail = () => {
                 <Layout.Section>
                     <Card title="Posts" sectioned>
                         <Button onClick={() => handleOpenModal('post')}>Add Post</Button>
-                        <OptionList
-                            options={postOptions}
-                            onChange={(value) => navigate(`/user/${id}/posts/${value}`)}
-                            selected={[]}
-                        />
+                        {userPosts.map(post => (
+                            <div
+                                key={post.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginTop: '10px',
+                                    cursor: 'pointer',
+                                    padding: '10px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px'
+                                }}
+                                onClick={() => navigate(`/user/${id}/posts/${post.id}`)}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f4f6f8'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                            >
+                                <Text>{post.title}</Text>
+                                <div>
+                                    <Button onClick={(e) => { e.stopPropagation(); handleOpenModal('post', post); }}>Edit</Button>
+                                    <Button destructive onClick={(e) => { e.stopPropagation(); handleDelete('post', post.id); }}>Delete</Button>
+                                </div>
+                            </div>
+                        ))}
                     </Card>
                 </Layout.Section>
 
                 <Layout.Section>
                     <Card title="Albums" sectioned>
                         <Button onClick={() => handleOpenModal('album')}>Add Album</Button>
-                        <OptionList
-                            options={albumOptions}
-                            onChange={(value) => navigate(`/user/${id}/albums/${value}`)}
-                            selected={[]}
-                        />
+                        {userAlbums.map(album => (
+                            <div
+                                key={album.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginTop: '10px',
+                                    cursor: 'pointer',
+                                    padding: '10px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px'
+                                }}
+                                onClick={() => navigate(`/user/${id}/albums/${album.id}`)}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f4f6f8'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                            >
+                                <Text>{album.title}</Text>
+                                <div>
+                                    <Button onClick={(e) => { e.stopPropagation(); handleOpenModal('album', album); }}>Edit</Button>
+                                    <Button destructive onClick={(e) => { e.stopPropagation(); handleDelete('album', album.id); }}>Delete</Button>
+                                </div>
+                            </div>
+                        ))}
                     </Card>
                 </Layout.Section>
 
                 <Layout.Section>
                     <Card title="Todos" sectioned>
                         <Button onClick={() => handleOpenModal('todo')}>Add Todo</Button>
-                        <OptionList
-                            options={todoOptions}
-                            onChange={(value) => navigate(`/user/${id}/todos`)}
-                            selected={[]}
-                        />
+                        {userTodos.map(todo => (
+                            <div
+                                key={todo.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginTop: '10px',
+                                    padding: '10px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px'
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Checkbox
+                                        label={todo.title}
+                                        checked={todo.completed}
+                                        onChange={() => handleTodoCompletion(todo.id)}
+                                    />
+                                </div>
+                                <div>
+                                    <Button onClick={() => handleOpenModal('todo', todo)}>Edit</Button>
+                                    <Button destructive onClick={() => handleDelete('todo', todo.id)}>Delete</Button>
+                                </div>
+                            </div>
+                        ))}
                     </Card>
                 </Layout.Section>
 
@@ -121,7 +173,7 @@ const UserDetail = () => {
                         open={isModalOpen}
                         onClose={handleCloseModal}
                         onSave={handleSave}
-                        initialData={modalType === 'post' ? selectedPost : modalType === 'album' ? selectedAlbum : selectedTodo}
+                        initialData={selectedItem}
                         type={modalType.charAt(0).toUpperCase() + modalType.slice(1)}
                     />
                 )}
