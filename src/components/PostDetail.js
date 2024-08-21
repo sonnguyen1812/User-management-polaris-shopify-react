@@ -1,23 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Layout, Text, Spinner, Page } from '@shopify/polaris';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Card, Layout, Text, Page, Button, Modal, TextField } from '@shopify/polaris';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 
 const PostDetail = () => {
-    const { userId, postId } = useParams();
-    const { posts, comments } = useUserContext();
-    const [post, setPost] = useState(null);
-    const [postComments, setPostComments] = useState([]);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { posts, comments, setPosts, setComments } = useUserContext();
+    const post = posts.find(post => post.id === parseInt(id));
+    const postComments = comments.filter(comment => comment.postId === parseInt(id));
 
-    useEffect(() => {
-        const selectedPost = posts.find(post => post.id === parseInt(postId));
-        if (selectedPost) {
-            setPost(selectedPost);
-            setPostComments(comments.filter(comment => comment.postId === parseInt(postId)));
+    const [selectedComment, setSelectedComment] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalType, setModalType] = useState('');
+    const [commentText, setCommentText] = useState('');
+
+    if (!post) return <p>Post not found</p>;
+
+    const handleOpenModal = (type, comment = null) => {
+        setModalType(type);
+        setSelectedComment(comment);
+        setCommentText(comment ? comment.body : '');
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedComment(null);
+        setCommentText('');
+    };
+
+    const handleSave = () => {
+        if (modalType === 'edit') {
+            setComments(comments.map(comment =>
+                comment.id === selectedComment.id ? { ...comment, body: commentText } : comment
+            ));
+        } else if (modalType === 'add') {
+            setComments([...comments, { id: comments.length + 1, postId: parseInt(id), body: commentText }]);
         }
-    }, [postId, posts, comments]);
+        handleCloseModal();
+    };
 
-    if (!post) return <Spinner />;
+    const handleDelete = (commentId) => {
+        setComments(comments.filter(comment => comment.id !== commentId));
+    };
 
     return (
         <Page title="Post Details">
@@ -31,19 +57,50 @@ const PostDetail = () => {
 
                 <Layout.Section>
                     <Card title="Comments" sectioned>
-                        {postComments.length > 0 ? (
-                            postComments.map(comment => (
-                                <Card key={comment.id} sectioned>
-                                    <p><Text variation="strong">Name:</Text> {comment.name}</p>
-                                    <p><Text variation="strong">Email:</Text> {comment.email}</p>
-                                    <p><Text variation="strong">Comment:</Text> {comment.body}</p>
-                                </Card>
-                            ))
-                        ) : (
-                            <p>No comments available.</p>
-                        )}
+                        <Button onClick={() => handleOpenModal('add')}>Add Comment</Button>
+                        {postComments.map(comment => (
+                            <div
+                                key={comment.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    marginTop: '10px',
+                                    padding: '10px',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px'
+                                }}
+                            >
+                                <Text>{comment.body}</Text>
+                                <div>
+                                    <Button onClick={() => handleOpenModal('edit', comment)}>Edit</Button>
+                                    <Button destructive onClick={() => handleDelete(comment.id)}>Delete</Button>
+                                </div>
+                            </div>
+                        ))}
                     </Card>
                 </Layout.Section>
+
+                {isModalOpen && (
+                    <Modal
+                        open={isModalOpen}
+                        onClose={handleCloseModal}
+                        title={modalType === 'edit' ? 'Edit Comment' : 'Add Comment'}
+                        primaryAction={{
+                            content: 'Save',
+                            onAction: handleSave
+                        }}
+                    >
+                        <Modal.Section>
+                            <TextField
+                                value={commentText}
+                                onChange={setCommentText}
+                                multiline
+                                label="Comment"
+                                placeholder="Enter your comment"
+                            />
+                        </Modal.Section>
+                    </Modal>
+                )}
             </Layout>
         </Page>
     );
