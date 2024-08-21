@@ -18,7 +18,7 @@ function App() {
           <Frame>
             <Routes>
               <Route path="/" exact element=<UserManagement /> />
-              <Route path="/user/:id" exact element=<UserDetail/> />
+              <Route path="/user/:id" element=<UserDetail/> />
               <Route path="/user/:id/posts/:postId" element=<PostDetail/> />
               <Route path="/user/:id/albums/:albumId" element=<AlbumDetail/> />
             </Routes>
