@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, ResourceList, Text, Icon } from '@shopify/polaris';
+import { Button, Card, ResourceList, Text } from '@shopify/polaris';
 import { useNavigate } from 'react-router-dom';
 import { EditIcon, DeleteIcon } from '@shopify/polaris-icons';
 
