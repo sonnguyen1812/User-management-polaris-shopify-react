@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Layout, Text, Page, Button, Checkbox } from '@shopify/polaris';
+import {ArrowLeftIcon} from "@shopify/polaris-icons";
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 import ItemForm from './ItemForm';
@@ -70,6 +71,9 @@ const UserDetail = () => {
     return (
         <Page title="User Details">
             <Layout>
+                <Layout.Section>
+                    <Button onClick={() => navigate(-1)} icon={ArrowLeftIcon}>Go Back</Button>
+                </Layout.Section>
                 <Layout.Section>
                     <Card title="User Information" sectioned>
                         <p><Text variation="strong">Name:</Text> {user.name || 'N/A'}</p>

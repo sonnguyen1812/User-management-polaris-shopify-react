@@ -2,24 +2,22 @@ import React, { useState } from 'react';
 import { Card, Layout, Text, Page, Button, Modal, TextField } from '@shopify/polaris';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
+import {ArrowLeftIcon} from "@shopify/polaris-icons";
 
 const AlbumDetail = () => {
     const { userId, albumId } = useParams();
     const navigate = useNavigate();
     const { albums, photos, setAlbums, setPhotos } = useUserContext();
 
-    // Tìm album và các photo liên quan
     const album = albums.find(album => album.id === parseInt(albumId));
     const albumPhotos = photos.filter(photo => photo.albumId === parseInt(albumId));
 
-    // State modal và photo
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
     const [photoUrl, setPhotoUrl] = useState('');
     const [photoTitle, setPhotoTitle] = useState('');
 
-    // Nếu album không tồn tại, hiển thị thông báo lỗi
     if (!album) {
         return (
             <Page title="Album Not Found">
@@ -31,7 +29,6 @@ const AlbumDetail = () => {
         );
     }
 
-    // Mở modal với kiểu và photo đã chọn
     const handleOpenModal = (type, photo = null) => {
         setModalType(type);
         setSelectedPhoto(photo);
@@ -40,7 +37,6 @@ const AlbumDetail = () => {
         setIsModalOpen(true);
     };
 
-    // Đóng modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedPhoto(null);
@@ -48,7 +44,6 @@ const AlbumDetail = () => {
         setPhotoTitle('');
     };
 
-    // Lưu photo mới hoặc đã chỉnh sửa
     const handleSave = () => {
         if (modalType === 'edit' && selectedPhoto) {
             setPhotos(photos.map(photo =>
@@ -60,7 +55,6 @@ const AlbumDetail = () => {
         handleCloseModal();
     };
 
-    // Xóa photo
     const handleDelete = (photoId) => {
         setPhotos(photos.filter(photo => photo.id !== photoId));
     };
@@ -68,6 +62,10 @@ const AlbumDetail = () => {
     return (
         <Page title="Album Details">
             <Layout>
+                <Layout.Section>
+                    <Button onClick={() => navigate(-1)} icon={ArrowLeftIcon}>Go Back</Button>
+                </Layout.Section>
+
                 <Layout.Section>
                     <Card title="Album Information" sectioned>
                         <p><Text variation="strong">Title:</Text> {album.title}</p>

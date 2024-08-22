@@ -2,23 +2,21 @@ import React, { useState } from 'react';
 import { Card, Layout, Text, Page, Button, Modal, TextField } from '@shopify/polaris';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
+import {ArrowLeftIcon} from "@shopify/polaris-icons";
 
 const PostDetail = () => {
     const { userId, postId } = useParams();
     const navigate = useNavigate();
     const { posts, comments, setPosts, setComments } = useUserContext();
 
-    // Tìm post và các comment liên quan
     const post = posts.find(post => post.id === parseInt(postId));
     const postComments = comments.filter(comment => comment.postId === parseInt(postId));
 
-    // State modal và comment
     const [selectedComment, setSelectedComment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
     const [commentText, setCommentText] = useState('');
 
-    // Nếu post không tồn tại, hiển thị thông báo lỗi
     if (!post) {
         return (
             <Page title="Post Not Found">
@@ -30,7 +28,6 @@ const PostDetail = () => {
         );
     }
 
-    // Mở modal với kiểu và comment đã chọn
     const handleOpenModal = (type, comment = null) => {
         setModalType(type);
         setSelectedComment(comment);
@@ -38,14 +35,12 @@ const PostDetail = () => {
         setIsModalOpen(true);
     };
 
-    // Đóng modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedComment(null);
         setCommentText('');
     };
 
-    // Lưu comment mới hoặc đã chỉnh sửa
     const handleSave = () => {
         if (modalType === 'edit' && selectedComment) {
             setComments(comments.map(comment =>
@@ -57,7 +52,6 @@ const PostDetail = () => {
         handleCloseModal();
     };
 
-    // Xóa comment
     const handleDelete = (commentId) => {
         setComments(comments.filter(comment => comment.id !== commentId));
     };
@@ -65,6 +59,9 @@ const PostDetail = () => {
     return (
         <Page title="Post Details">
             <Layout>
+                <Layout.Section>
+                    <Button onClick={() => navigate(-1)} icon={ArrowLeftIcon}>Go Back</Button>
+                </Layout.Section>
                 <Layout.Section>
                     <Card title="Post Information" sectioned>
                         <p><Text variation="strong">Title:</Text> {post.title}</p>
