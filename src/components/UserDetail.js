@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Layout, Text, Page, Button, Checkbox, Modal } from '@shopify/polaris';
+import { Card, Layout, Text, Page, Button, Checkbox } from '@shopify/polaris';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 import ItemForm from './ItemForm';
@@ -8,6 +8,7 @@ const UserDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { users, posts, albums, todos, setPosts, setAlbums, setTodos } = useUserContext();
+
     const user = users.find(user => user.id === parseInt(id));
     const userPosts = posts.filter(post => post.userId === parseInt(id));
     const userAlbums = albums.filter(album => album.userId === parseInt(id));
@@ -17,6 +18,7 @@ const UserDetail = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
 
+    // Kiểm tra nếu user không tồn tại, trả về thông báo lỗi
     if (!user) return <p>User not found</p>;
 
     const handleOpenModal = (type, item = null) => {
@@ -70,12 +72,12 @@ const UserDetail = () => {
             <Layout>
                 <Layout.Section>
                     <Card title="User Information" sectioned>
-                        <p><Text variation="strong">Name:</Text> {user.name}</p>
-                        <p><Text variation="strong">Email:</Text> {user.email}</p>
-                        <p><Text variation="strong">Phone:</Text> {user.phone}</p>
-                        <p><Text variation="strong">Website:</Text> {user.website}</p>
-                        <p><Text variation="strong">Company:</Text> {user.company.name}</p>
-                        <p><Text variation="strong">Address:</Text> {`${user.address.suite}, ${user.address.street}, ${user.address.city}, ${user.address.zipcode}`}</p>
+                        <p><Text variation="strong">Name:</Text> {user.name || 'N/A'}</p>
+                        <p><Text variation="strong">Email:</Text> {user.email || 'N/A'}</p>
+                        <p><Text variation="strong">Phone:</Text> {user.phone || 'N/A'}</p>
+                        <p><Text variation="strong">Website:</Text> {user.website || 'N/A'}</p>
+                        <p><Text variation="strong">Company:</Text> {user.company?.name || 'N/A'}</p>
+                        <p><Text variation="strong">Address:</Text> {`${user.address?.suite || ''}, ${user.address?.street || ''}, ${user.address?.city || ''}, ${user.address?.zipcode || ''}`}</p>
                     </Card>
                 </Layout.Section>
 

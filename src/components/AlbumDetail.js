@@ -4,20 +4,34 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 
 const AlbumDetail = () => {
-    const { id } = useParams();
+    const { userId, albumId } = useParams();
     const navigate = useNavigate();
     const { albums, photos, setAlbums, setPhotos } = useUserContext();
-    const album = albums.find(album => album.id === parseInt(id));
-    const albumPhotos = photos.filter(photo => photo.albumId === parseInt(id));
 
+    // Tìm album và các photo liên quan
+    const album = albums.find(album => album.id === parseInt(albumId));
+    const albumPhotos = photos.filter(photo => photo.albumId === parseInt(albumId));
+
+    // State modal và photo
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
     const [photoUrl, setPhotoUrl] = useState('');
     const [photoTitle, setPhotoTitle] = useState('');
 
-    if (!album) return <p>Album not found</p>;
+    // Nếu album không tồn tại, hiển thị thông báo lỗi
+    if (!album) {
+        return (
+            <Page title="Album Not Found">
+                <Card sectioned>
+                    <p>Album not found</p>
+                    <Button onClick={() => navigate(-1)}>Go Back</Button>
+                </Card>
+            </Page>
+        );
+    }
 
+    // Mở modal với kiểu và photo đã chọn
     const handleOpenModal = (type, photo = null) => {
         setModalType(type);
         setSelectedPhoto(photo);
@@ -26,6 +40,7 @@ const AlbumDetail = () => {
         setIsModalOpen(true);
     };
 
+    // Đóng modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedPhoto(null);
@@ -33,17 +48,19 @@ const AlbumDetail = () => {
         setPhotoTitle('');
     };
 
+    // Lưu photo mới hoặc đã chỉnh sửa
     const handleSave = () => {
-        if (modalType === 'edit') {
+        if (modalType === 'edit' && selectedPhoto) {
             setPhotos(photos.map(photo =>
                 photo.id === selectedPhoto.id ? { ...photo, url: photoUrl, title: photoTitle } : photo
             ));
         } else if (modalType === 'add') {
-            setPhotos([...photos, { id: photos.length + 1, albumId: parseInt(id), url: photoUrl, title: photoTitle }]);
+            setPhotos([...photos, { id: photos.length + 1, albumId: parseInt(albumId), url: photoUrl, title: photoTitle }]);
         }
         handleCloseModal();
     };
 
+    // Xóa photo
     const handleDelete = (photoId) => {
         setPhotos(photos.filter(photo => photo.id !== photoId));
     };

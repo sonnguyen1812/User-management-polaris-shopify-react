@@ -4,19 +4,33 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 
 const PostDetail = () => {
-    const { id } = useParams();
+    const { userId, postId } = useParams();
     const navigate = useNavigate();
     const { posts, comments, setPosts, setComments } = useUserContext();
-    const post = posts.find(post => post.id === parseInt(id));
-    const postComments = comments.filter(comment => comment.postId === parseInt(id));
 
+    // Tìm post và các comment liên quan
+    const post = posts.find(post => post.id === parseInt(postId));
+    const postComments = comments.filter(comment => comment.postId === parseInt(postId));
+
+    // State modal và comment
     const [selectedComment, setSelectedComment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('');
     const [commentText, setCommentText] = useState('');
 
-    if (!post) return <p>Post not found</p>;
+    // Nếu post không tồn tại, hiển thị thông báo lỗi
+    if (!post) {
+        return (
+            <Page title="Post Not Found">
+                <Card sectioned>
+                    <p>Post not found</p>
+                    <Button onClick={() => navigate(-1)}>Go Back</Button>
+                </Card>
+            </Page>
+        );
+    }
 
+    // Mở modal với kiểu và comment đã chọn
     const handleOpenModal = (type, comment = null) => {
         setModalType(type);
         setSelectedComment(comment);
@@ -24,23 +38,26 @@ const PostDetail = () => {
         setIsModalOpen(true);
     };
 
+    // Đóng modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedComment(null);
         setCommentText('');
     };
 
+    // Lưu comment mới hoặc đã chỉnh sửa
     const handleSave = () => {
-        if (modalType === 'edit') {
+        if (modalType === 'edit' && selectedComment) {
             setComments(comments.map(comment =>
                 comment.id === selectedComment.id ? { ...comment, body: commentText } : comment
             ));
         } else if (modalType === 'add') {
-            setComments([...comments, { id: comments.length + 1, postId: parseInt(id), body: commentText }]);
+            setComments([...comments, { id: comments.length + 1, postId: parseInt(postId), body: commentText }]);
         }
         handleCloseModal();
     };
 
+    // Xóa comment
     const handleDelete = (commentId) => {
         setComments(comments.filter(comment => comment.id !== commentId));
     };

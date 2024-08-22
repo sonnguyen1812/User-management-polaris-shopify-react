@@ -12,8 +12,12 @@ export const UserProvider = ({ children, initialData }) => {
     const [comments, setComments] = useState(initialData.comments || []);
     const [photos, setPhotos] = useState(initialData.photos || []);
 
+    const getNextUserId = (users) => {
+        return users.length > 0 ? Math.max(...users.map(user => user.id)) + 1 : 1;
+    };
+
     const addUser = (user) => {
-        setUsers(prevUsers => [...prevUsers, user]);
+        setUsers(prevUsers => [...prevUsers, { ...user, id: getNextUserId(prevUsers) }]);
     };
 
     const deleteUser = (userId) => {

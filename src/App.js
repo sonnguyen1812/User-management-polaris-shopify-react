@@ -19,8 +19,8 @@ function App() {
             <Routes>
               <Route path="/" exact element=<UserManagement /> />
               <Route path="/user/:id" element=<UserDetail/> />
-              <Route path="/user/:id/posts/:postId" element=<PostDetail/> />
-              <Route path="/user/:id/albums/:albumId" element=<AlbumDetail/> />
+              <Route path="/user/:userId/posts/:postId" element=<PostDetail/> />
+              <Route path="/user/:userId/albums/:albumId" element=<AlbumDetail/> />
             </Routes>
           </Frame>
             </MainLayout>
