@@ -14,6 +14,10 @@ const UserManagement = () => {
         setIsModalOpen(true);
     };
 
+    const handleAddUser = (newUser) => {
+        setUsers([...users, { id: users.length + 1, ...newUser }]);
+    };
+
     const handleEdit = (user) => {
         setSelectedUser(user);
         setIsModalOpen(true);
@@ -41,13 +45,11 @@ const UserManagement = () => {
         <Page title="User Management">
             <Layout>
                 <Layout.Section>
-                    <Button primary onClick={handleCreate}>Create New User</Button>
-                </Layout.Section>
-                <Layout.Section>
                     <UserList
                         users={users}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onAdd={handleAddUser}
                     />
                 </Layout.Section>
             </Layout>
