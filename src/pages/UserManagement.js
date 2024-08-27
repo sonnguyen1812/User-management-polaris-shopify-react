@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Page, Layout, Button, Card, Spinner } from '@shopify/polaris';
+import { Page, Layout, Spinner } from '@shopify/polaris';
 import UserList from '../components/UserList';
 import UserForm from '../components/UserForm';
 import { useUserContext } from '../contexts/UserContext';
@@ -8,11 +8,6 @@ const UserManagement = () => {
     const { users, setUsers } = useUserContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-
-    const handleCreate = () => {
-        setSelectedUser(null);
-        setIsModalOpen(true);
-    };
 
     const handleAddUser = (newUser) => {
         setUsers([...users, { id: users.length + 1, ...newUser }]);
