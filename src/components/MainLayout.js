@@ -1,5 +1,11 @@
 import React from 'react';
-import { Frame, TopBar, Page } from '@shopify/polaris';
+import { Frame, TopBar, Page, Navigation } from '@shopify/polaris';
+import {
+    PersonIcon,
+    BlogIcon,
+    CameraIcon,
+    ListBulletedFilledIcon
+} from '@shopify/polaris-icons';
 
 const MainLayout = ({ children }) => {
     const topBarMarkup = (
@@ -9,9 +15,39 @@ const MainLayout = ({ children }) => {
         />
     );
 
+    const navigationMarkup = (
+        <Navigation location="/">
+            <Navigation.Section
+                items={[
+                    {
+                        label: 'Users',
+                        icon: PersonIcon,
+                        url: '/'
+                    },
+                    {
+                        label: 'Posts',
+                        icon: BlogIcon,
+                        /*url: '/'*/
+                    },
+                    {
+                        label: 'Albums',
+                        icon: CameraIcon,
+                        /*url: '/'*/
+                    },
+                    {
+                        label: 'Todo Lists',
+                        icon: ListBulletedFilledIcon,
+                        /*url: '/'*/
+                    },
+                ]}
+            />
+        </Navigation>
+    );
+
     return (
         <Frame
             topBar={topBarMarkup}
+            navigation={navigationMarkup} // Thêm navigation vào đây
         >
             <Page>
                 {children}

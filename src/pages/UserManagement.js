@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Page, Layout, Spinner } from '@shopify/polaris';
 import UserList from '../components/UserList';
-import UserForm from '../components/UserForm';
 import { useUserContext } from '../contexts/UserContext';
 
 const UserManagement = () => {
@@ -48,15 +47,6 @@ const UserManagement = () => {
                     />
                 </Layout.Section>
             </Layout>
-
-            {isModalOpen && (
-                <UserForm
-                    open={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onSave={handleSave}
-                    initialData={selectedUser}
-                />
-            )}
         </Page>
     );
 };

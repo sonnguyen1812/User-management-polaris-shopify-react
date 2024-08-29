@@ -6,33 +6,48 @@ import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './contexts/UserContext';
 import axios from 'axios';
 import '@shopify/polaris/build/esm/styles.css';
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
 
 const fetchData = async (url) => {
-    const response = await axios.get(url);
-    return response.data;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching data from ${url}:`, error);
+        return [];
+    }
 };
 
 (async () => {
     try {
-        const users = await fetchData('https://jsonplaceholder.typicode.com/users');
-        const posts = await fetchData('https://jsonplaceholder.typicode.com/posts');
-        const comments = await fetchData('https://jsonplaceholder.typicode.com/comments');
-        const albums = await fetchData('https://jsonplaceholder.typicode.com/albums');
-        const photos = await fetchData('https://jsonplaceholder.typicode.com/photos');
-        const todos = await fetchData('https://jsonplaceholder.typicode.com/todos');
+        const [users, posts, comments, albums, photos, todos] = await Promise.all([
+            fetchData('https://jsonplaceholder.typicode.com/users'),
+            fetchData('https://jsonplaceholder.typicode.com/posts'),
+            fetchData('https://jsonplaceholder.typicode.com/comments'),
+            fetchData('https://jsonplaceholder.typicode.com/albums'),
+            fetchData('https://jsonplaceholder.typicode.com/photos'),
+            fetchData('https://jsonplaceholder.typicode.com/todos'),
+        ]);
+
+        // Hợp nhất dữ liệu liên quan vào user object
+        const usersWithDetails = users.map(user => ({
+            ...user,
+            posts: posts.filter(post => post.userId === user.id),
+            albums: albums.filter(album => album.userId === user.id),
+            todos: todos.filter(todo => todo.userId === user.id),
+        }));
 
         ReactDOM.createRoot(document.getElementById('root')).render(
             <React.StrictMode>
                 <BrowserRouter>
-                    <UserProvider initialData={{ users, posts, comments, albums, photos, todos }}>
+                    <UserProvider initialData={{ users: usersWithDetails, posts, comments, albums, photos, todos }}>
                         <App />
                     </UserProvider>
                 </BrowserRouter>
             </React.StrictMode>
         );
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching or processing data:', error);
     }
 })();
 

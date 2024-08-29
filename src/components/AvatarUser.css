@@ -1,0 +1,4 @@
+.avatar-round {
+    border-radius: 50%; /* Để làm cho hình avatar thành hình tròn */
+    overflow: hidden;   /* Đảm bảo nội dung không bị tràn ra ngoài hình tròn */
+}
