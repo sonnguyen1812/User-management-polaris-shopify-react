@@ -23,8 +23,7 @@ import {
 } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
-import './AvatarUser.css'
-
+import './AvatarUser.css';
 
 const UserList = () => {
     const { users, setUsers } = useUserContext();
@@ -38,6 +37,7 @@ const UserList = () => {
     const [newUserAddress, setNewUserAddress] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [popoverActiveId, setPopoverActiveId] = useState(null); // Quản lý trạng thái của từng popover
+    const [errors, setErrors] = useState({}); // Trạng thái lỗi
     const navigate = useNavigate();
 
     const togglePopoverActive = (userId) => {
@@ -53,27 +53,39 @@ const UserList = () => {
         setNewUserName('');
         setNewUserEmail('');
         setNewUserPhone('');
+        setErrors({}); // Reset lỗi khi đóng modal
+    };
+
+    const validateUserData = () => {
+        const newErrors = {};
+        if (!newUserName) newErrors.name = 'Name is required';
+        if (!newUserEmail) newErrors.email = 'Email is required';
+        if (!newUserPhone) newErrors.phone = 'Phone is required';
+        return newErrors;
     };
 
     const handleSaveUser = () => {
-        if (newUserName && newUserEmail && newUserPhone) {
-            const maxId = users.reduce((max, user) => (user.id > max ? user.id : max), 10);
-
-            const newUser = {
-                id: maxId + 1,
-                name: newUserName,
-                email: newUserEmail,
-                phone: newUserPhone,
-                website: newUserWebsite,
-                company: newUserCompany,
-                address: newUserAddress,
-            };
-
-            setUsers((prevUsers) => [...prevUsers, newUser]);
-            handleCloseModal();
+        const newErrors = validateUserData();
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
         }
-    };
 
+        const maxId = users.reduce((max, user) => (user.id > max ? user.id : max), 10);
+
+        const newUser = {
+            id: maxId + 1,
+            name: newUserName,
+            email: newUserEmail,
+            phone: newUserPhone,
+            website: newUserWebsite,
+            company: newUserCompany,
+            address: newUserAddress,
+        };
+
+        setUsers((prevUsers) => [...prevUsers, newUser]);
+        handleCloseModal();
+    };
 
     const handleEditUser = (user) => {
         setSelectedUser(user);
@@ -85,7 +97,21 @@ const UserList = () => {
         togglePopoverActive(null);
     };
 
+    const validateEditedUserData = () => {
+        const newErrors = {};
+        if (!selectedUser.name) newErrors.name = 'Name is required';
+        if (!selectedUser.email) newErrors.email = 'Email is required';
+        if (!selectedUser.phone) newErrors.phone = 'Phone is required';
+        return newErrors;
+    };
+
     const handleSaveEditedUser = () => {
+        const newErrors = validateEditedUserData();
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         if (selectedUser) {
             setUsers((prevUsers) =>
                 prevUsers.map((user) => (user.id === selectedUser.id ? selectedUser : user))
@@ -93,7 +119,6 @@ const UserList = () => {
             setIsEditModalOpen(false);
         }
     };
-
 
     const getInitials = (name) => {
         const initials = name.split(' ').map(word => word.charAt(0)).join('');
@@ -239,7 +264,7 @@ const UserList = () => {
                                                     marginRight: '4px'
                                                 }} /> {userAlbums}
                                             </Text>
-                                            <Tooltip content={`Completed: ${completedTodos}, Pending: ${pendingTodos}`}>
+                                            <Tooltip content={`Completed Todos: ${completedTodos}, Pending Todos: ${pendingTodos}`}>
                                                 <Text variant="bodyMd" as="span"
                                                       style={{ display: 'flex', alignItems: 'center' }}>
                                                     <ListBulletedFilledIcon color="subdued" style={{
@@ -317,20 +342,32 @@ const UserList = () => {
                     <TextField
                         label="Name"
                         value={newUserName}
-                        onChange={(value) => setNewUserName(value)}
+                        onChange={(value) => {
+                            setNewUserName(value);
+                            setErrors((prevErrors) => ({ ...prevErrors, name: '' }));
+                        }}
                         autoComplete="off"
+                        error={errors.name}
                     />
                     <TextField
                         label="Email"
                         value={newUserEmail}
-                        onChange={(value) => setNewUserEmail(value)}
+                        onChange={(value) => {
+                            setNewUserEmail(value);
+                            setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+                        }}
                         autoComplete="off"
+                        error={errors.email}
                     />
                     <TextField
                         label="Phone"
                         value={newUserPhone}
-                        onChange={(value) => setNewUserPhone(value)}
+                        onChange={(value) => {
+                            setNewUserPhone(value);
+                            setErrors((prevErrors) => ({ ...prevErrors, phone: '' }));
+                        }}
                         autoComplete="off"
+                        error={errors.phone}
                     />
                     <TextField
                         label="Website"
@@ -374,18 +411,21 @@ const UserList = () => {
                         value={selectedUser ? selectedUser.name : ''}
                         onChange={(value) => setSelectedUser({ ...selectedUser, name: value })}
                         autoComplete="off"
+                        error={errors.name}
                     />
                     <TextField
                         label="Email"
                         value={selectedUser ? selectedUser.email : ''}
                         onChange={(value) => setSelectedUser({ ...selectedUser, email: value })}
                         autoComplete="off"
+                        error={errors.email}
                     />
                     <TextField
                         label="Phone"
                         value={selectedUser ? selectedUser.phone : ''}
                         onChange={(value) => setSelectedUser({ ...selectedUser, phone: value })}
                         autoComplete="off"
+                        error={errors.phone}
                     />
                     <TextField
                         label="Website"
@@ -405,7 +445,6 @@ const UserList = () => {
                         onChange={(value) => setSelectedUser({ ...selectedUser, address: value })}
                         autoComplete="off"
                     />
-
                 </Modal.Section>
             </Modal>
         </>
