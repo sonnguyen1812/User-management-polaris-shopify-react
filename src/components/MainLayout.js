@@ -20,7 +20,7 @@ const MainLayout = ({ children }) => {
             <Navigation.Section
                 items={[
                     {
-                        label: 'Users',
+                        label: 'Dashboard',
                         icon: PersonIcon,
                         url: '/'
                     },
