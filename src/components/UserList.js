@@ -11,7 +11,6 @@ import {
     Button,
     ActionList,
     Popover,
-    Icon,
     Spinner
 } from '@shopify/polaris';
 import {
@@ -23,7 +22,7 @@ import {
 } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
-import './AvatarUser.css';
+import '../Stylesheet/AvatarUser.css';
 
 const UserList = () => {
     const { users, setUsers } = useUserContext();
