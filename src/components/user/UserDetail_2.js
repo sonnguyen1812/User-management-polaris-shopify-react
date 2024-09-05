@@ -1,9 +1,8 @@
-/*
 import React, { useState } from 'react';
 import { Card, Layout, Text, Page, Button, Checkbox } from '@shopify/polaris';
 import {ArrowLeftIcon} from "@shopify/polaris-icons";
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUserContext } from '../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 import ItemForm from './ItemForm';
 
 const UserDetail = () => {
@@ -190,4 +189,3 @@ const UserDetail = () => {
 };
 
 export default UserDetail;
-*/

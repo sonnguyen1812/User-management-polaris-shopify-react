@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Page, Layout, Spinner } from '@shopify/polaris';
-import UserList from '../components/UserList';
+import UserList from '../components/user/UserList';
 import { useUserContext } from '../contexts/UserContext';
 
 const UserManagement = () => {
     const { users, setUsers } = useUserContext();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [, setIsModalOpen] = useState(false);
+    const [, setSelectedUser] = useState(null);
 
     const handleAddUser = (newUser) => {
         setUsers([...users, { id: users.length + 1, ...newUser }]);
@@ -19,18 +19,6 @@ const UserManagement = () => {
 
     const handleDelete = (id) => {
         setUsers(users.filter(user => user.id !== id));
-    };
-
-    const handleSave = (userData) => {
-        if (selectedUser) {
-            // Update existing user
-            setUsers(users.map(user => user.id === selectedUser.id ? { ...user, ...userData } : user));
-        } else {
-            // Create new user
-            const newUser = { id: users.length + 1, ...userData };
-            setUsers([...users, newUser]);
-        }
-        setIsModalOpen(false);
     };
 
     if (!users) return <Spinner />;

@@ -21,8 +21,8 @@ import {
     MenuVerticalIcon // Import icon ba chấm dọc
 } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../contexts/UserContext';
-import '../Stylesheet/AvatarUser.css';
+import { useUserContext } from '../../contexts/UserContext';
+import '../../Stylesheet/AvatarUser.css';
 
 const UserList = () => {
     const { users, setUsers } = useUserContext();
@@ -210,15 +210,17 @@ const UserList = () => {
                                         border: '1px solid #ccc',
                                         borderRadius: '10px',
                                         padding: '16px',
+                                        paddingTop: '30px',
                                         backgroundColor: '#fff',
-                                        height: '100%',
+                                        height: '340px', // Cố định chiều cao thẻ
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        justifyContent: 'center',
+                                        justifyContent: 'space-between', // Căn chỉnh các thành phần trong thẻ
                                         boxSizing: 'border-box',
                                         cursor: 'pointer',
-                                        position: 'relative', // Thêm position relative để căn nút ba chấm
+                                        position: 'relative', // Cần thiết để căn nút ba chấm
                                         transition: 'transform 0.2s',
+                                        overflow: 'hidden', // Ngăn chặn nội dung tràn ra ngoài
                                     }}
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.transform = 'scale(1.02)';
@@ -227,15 +229,33 @@ const UserList = () => {
                                         e.currentTarget.style.transform = 'scale(1)';
                                     }}
                                 >
-                                    <BlockStack vertical="true" alignment="center">
+                                    <BlockStack vertical="true" alignment="center" spacing="extraTight">
                                         <CustomAvatar
                                             initials={getInitials(name)}
                                             size="medium"
                                         />
-                                        <div style={{ textAlign: 'center' }}>
-                                            <Text variant="headingMd" as="h3">{name}</Text>
-                                            <Text variant="bodyMd">{email}</Text>
-                                            <Text variant="bodyMd">{phone}</Text>
+                                        <div style={{textAlign: 'center', overflow: 'hidden', marginTop: '15px'}}>
+                                            <Text variant="headingMd" as="h3" style={{
+                                                whiteSpace: 'nowrap',
+                                                textOverflow: 'ellipsis',
+                                                overflow: 'hidden'
+                                            }}>
+                                                {name}
+                                            </Text>
+                                            <Text variant="bodyMd" style={{
+                                                whiteSpace: 'nowrap',
+                                                textOverflow: 'ellipsis',
+                                                overflow: 'hidden'
+                                            }}>
+                                                {email}
+                                            </Text>
+                                            <Text variant="bodyMd" style={{
+                                                whiteSpace: 'nowrap',
+                                                textOverflow: 'ellipsis',
+                                                overflow: 'hidden'
+                                            }}>
+                                                {phone}
+                                            </Text>
                                         </div>
 
                                         <div
@@ -243,35 +263,36 @@ const UserList = () => {
                                                 display: 'flex',
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
-                                                marginTop: '8px',
-                                                gap: '8px'
+                                                marginTop: '20px',
+                                                gap: '20px'
                                             }}
                                         >
-                                            <Text variant="bodyMd" as="span"
-                                                  style={{ display: 'flex', alignItems: 'center' }}>
+                                            <div
+                                                  style={{display: 'flex', alignItems: 'center'}}>
                                                 <BlogIcon color="subdued" style={{
                                                     width: '20px',
                                                     height: '20px',
                                                     marginRight: '4px'
-                                                }} /> {userPosts}
-                                            </Text>
-                                            <Text variant="bodyMd" as="span"
-                                                  style={{ display: 'flex', alignItems: 'center' }}>
+                                                }}/> {userPosts}
+                                            </div>
+                                            <div
+                                                  style={{display: 'flex', alignItems: 'center'}}>
                                                 <ImageWithTextOverlayIcon color="subdued" style={{
                                                     width: '20px',
                                                     height: '20px',
                                                     marginRight: '4px'
-                                                }} /> {userAlbums}
-                                            </Text>
-                                            <Tooltip content={`Completed Todos: ${completedTodos}, Pending Todos: ${pendingTodos}`}>
-                                                <Text variant="bodyMd" as="span"
-                                                      style={{ display: 'flex', alignItems: 'center' }}>
+                                                }}/> {userAlbums}
+                                            </div>
+                                            <Tooltip
+                                                content={`Completed: ${completedTodos}, In progress: ${pendingTodos}`}>
+                                                <div
+                                                      style={{display: 'flex', alignItems: 'center'}}>
                                                     <ListBulletedFilledIcon color="subdued" style={{
                                                         width: '20px',
                                                         height: '20px',
-                                                        marginRight: '4px'
-                                                    }} /> {userTodos}
-                                                </Text>
+                                                        marginRight: '4px',
+                                                    }}/> {userTodos}
+                                                </div>
                                             </Tooltip>
                                         </div>
                                     </BlockStack>
@@ -290,11 +311,8 @@ const UserList = () => {
                                         <Popover
                                             active={popoverActiveId === id} // Kiểm tra nếu popoverActiveId là của user hiện tại
                                             activator={
-                                                <Button
-                                                    variant={"plain"}
-                                                    icon={MenuVerticalIcon}
-                                                    onClick={() => togglePopoverActive(id)}
-                                                />
+                                                <Button variant={"plain"} icon={MenuVerticalIcon}
+                                                        onClick={() => togglePopoverActive(id)}/>
                                             }
                                             onClose={() => togglePopoverActive(id)}
                                         >
@@ -316,6 +334,7 @@ const UserList = () => {
                                         </Popover>
                                     </div>
                                 </div>
+
                             );
                         })}
                     </InlineGrid>
@@ -343,7 +362,7 @@ const UserList = () => {
                         value={newUserName}
                         onChange={(value) => {
                             setNewUserName(value);
-                            setErrors((prevErrors) => ({ ...prevErrors, name: '' }));
+                            setErrors((prevErrors) => ({...prevErrors, name: ''}));
                         }}
                         autoComplete="off"
                         error={errors.name}
@@ -353,7 +372,7 @@ const UserList = () => {
                         value={newUserEmail}
                         onChange={(value) => {
                             setNewUserEmail(value);
-                            setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+                            setErrors((prevErrors) => ({...prevErrors, email: ''}));
                         }}
                         autoComplete="off"
                         error={errors.email}
@@ -363,7 +382,7 @@ const UserList = () => {
                         value={newUserPhone}
                         onChange={(value) => {
                             setNewUserPhone(value);
-                            setErrors((prevErrors) => ({ ...prevErrors, phone: '' }));
+                            setErrors((prevErrors) => ({...prevErrors, phone: ''}));
                         }}
                         autoComplete="off"
                         error={errors.phone}
@@ -408,7 +427,7 @@ const UserList = () => {
                     <TextField
                         label="Name"
                         value={selectedUser ? selectedUser.name : ''}
-                        onChange={(value) => setSelectedUser({ ...selectedUser, name: value })}
+                        onChange={(value) => setSelectedUser({...selectedUser, name: value})}
                         autoComplete="off"
                         error={errors.name}
                     />
