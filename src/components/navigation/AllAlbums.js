@@ -12,7 +12,10 @@ const AllAlbums = () => {
     };
 
     return (
-        <Page title="All Albums">
+        <Page
+            title="All Albums"
+            backAction={{ content: 'Back', onAction: () => navigate(-1) }}
+        >
             <Layout>
                 {albums.map(album => (
                     <Layout.Section key={album.id}>

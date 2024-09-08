@@ -10,7 +10,7 @@ import UserAlbums from "./components/album/UserAlbums";
 import UserTodos from "./components/todo/UserTodos";
 import AllPosts from "./components/navigation/AllPosts";
 import AllAlbums from "./components/navigation/AllAlbums";
-import AllTodos from "./components/navigation/AllTodos";
+// import AllTodos from "./components/navigation/AllTodos";
 import NotFoundPage from './pages/NotFoundPage';
 import '@shopify/polaris/build/esm/styles.css';
 import MainLayout from "./components/navigation/MainLayout";

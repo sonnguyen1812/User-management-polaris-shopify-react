@@ -30,18 +30,9 @@ const MainLayout = ({ children }) => {
     }, []);
 
     const handleSearch = useCallback(() => {
-        const [prefix, query] = searchValue.split(':');
-        if (prefix === '+posts') {
-            navigate(`/posts?search=${query}`);
-        } else if (prefix === '+albums') {
-            navigate(`/albums?search=${query}`);
-        } else if (prefix === '+todos') {
-            navigate(`/todos?search=${query}`);
-        } else {
-            navigate(`/users?search=${query}`);
-        }
-    }, [searchValue, navigate]);
-
+        // Implement search logic here
+        console.log('Searching for:', searchValue);
+    }, [searchValue]);
 
     const logo = {
         topBarSource:
@@ -70,11 +61,11 @@ const MainLayout = ({ children }) => {
 
     const searchResultsMarkup = isSearchActive ? (
         <ActionList
-            sections={[
-                { title: 'Users', items: [{ content: 'View all Users', onAction: () => handleSearch('users') }] },
-                { title: 'Posts', items: [{ content: 'View all Posts', onAction: () => handleSearch('+posts') }] },
-                { title: 'Albums', items: [{ content: 'View all Albums', onAction: () => handleSearch('+albums') }] },
-                { title: 'Todos', items: [{ content: 'View all Todos', onAction: () => handleSearch('+todos') }] },
+            items={[
+                { content: 'Users', onAction: () => handleSearch('users') },
+                { content: 'Posts', onAction: () => handleSearch('posts') },
+                { content: 'Albums', onAction: () => handleSearch('albums') },
+                { content: 'Todos', onAction: () => handleSearch('todos') },
             ]}
         />
     ) : null;

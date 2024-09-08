@@ -12,7 +12,10 @@ const AllPosts = () => {
     };
 
     return (
-        <Page title="All Posts">
+        <Page
+            title="All Posts"
+            backAction={{ content: 'Back', onAction: () => navigate(-1) }}
+        >
             <Layout>
                 {posts.map(post => (
                     <Layout.Section key={post.id}>
