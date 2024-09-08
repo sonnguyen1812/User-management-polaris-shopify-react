@@ -9,7 +9,7 @@ import UserPosts from "./components/post/UserPosts";
 import UserAlbums from "./components/album/UserAlbums";
 import UserTodos from "./components/todo/UserTodos";
 import '@shopify/polaris/build/esm/styles.css';
-import MainLayout from "./components/MainLayout";
+import MainLayout from "./components/navigation/MainLayout";
 
 
 function App() {

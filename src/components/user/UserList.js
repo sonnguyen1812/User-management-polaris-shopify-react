@@ -160,7 +160,7 @@ const UserList = () => {
                     >
                         <div
                             style={{
-                                border: '1px dashed #b9b9b9',
+                                border: '1.5px dashed #b9b9b9',
                                 borderRadius: '10px',
                                 padding: '16px',
                                 display: 'flex',
