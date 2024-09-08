@@ -8,6 +8,10 @@ import AlbumDetail from './components/album/AlbumDetail';
 import UserPosts from "./components/post/UserPosts";
 import UserAlbums from "./components/album/UserAlbums";
 import UserTodos from "./components/todo/UserTodos";
+import AllPosts from "./components/navigation/AllPosts";
+import AllAlbums from "./components/navigation/AllAlbums";
+import AllTodos from "./components/navigation/AllTodos";
+import NotFoundPage from './pages/NotFoundPage';
 import '@shopify/polaris/build/esm/styles.css';
 import MainLayout from "./components/navigation/MainLayout";
 
@@ -24,6 +28,10 @@ function App() {
                     <Route path="/user/:id/posts" element=<UserPosts /> />
                     <Route path="/user/:id/albums" element=<UserAlbums /> />
                     <Route path="/user/:id/todos" element=<UserTodos /> />
+                    <Route path="/posts" element=<AllPosts /> />
+                    <Route path="/albums" element=<AllAlbums /> />
+                    {/*<Route path="/todos" element=<AllTodos /> />*/}
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </MainLayout>
         </AppProvider>

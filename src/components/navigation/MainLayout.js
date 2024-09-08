@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Frame, TopBar, Navigation, ActionList, Icon, Text } from '@shopify/polaris';
+import { Frame, TopBar, Navigation, ActionList } from '@shopify/polaris';
 import { PersonIcon, BlogIcon, CameraIcon, ListBulletedIcon } from '@shopify/polaris-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -30,9 +30,18 @@ const MainLayout = ({ children }) => {
     }, []);
 
     const handleSearch = useCallback(() => {
-        // Implement search logic here
-        console.log('Searching for:', searchValue);
-    }, [searchValue]);
+        const [prefix, query] = searchValue.split(':');
+        if (prefix === '+posts') {
+            navigate(`/posts?search=${query}`);
+        } else if (prefix === '+albums') {
+            navigate(`/albums?search=${query}`);
+        } else if (prefix === '+todos') {
+            navigate(`/todos?search=${query}`);
+        } else {
+            navigate(`/users?search=${query}`);
+        }
+    }, [searchValue, navigate]);
+
 
     const logo = {
         topBarSource:
@@ -61,11 +70,11 @@ const MainLayout = ({ children }) => {
 
     const searchResultsMarkup = isSearchActive ? (
         <ActionList
-            items={[
-                { content: 'Users', onAction: () => handleSearch('users') },
-                { content: 'Posts', onAction: () => handleSearch('posts') },
-                { content: 'Albums', onAction: () => handleSearch('albums') },
-                { content: 'Todos', onAction: () => handleSearch('todos') },
+            sections={[
+                { title: 'Users', items: [{ content: 'View all Users', onAction: () => handleSearch('users') }] },
+                { title: 'Posts', items: [{ content: 'View all Posts', onAction: () => handleSearch('+posts') }] },
+                { title: 'Albums', items: [{ content: 'View all Albums', onAction: () => handleSearch('+albums') }] },
+                { title: 'Todos', items: [{ content: 'View all Todos', onAction: () => handleSearch('+todos') }] },
             ]}
         />
     ) : null;
