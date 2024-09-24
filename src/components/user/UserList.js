@@ -85,7 +85,7 @@ const UserList = () => {
       address: newUserAddress,
     };
 
-    setUsers((prevUsers) => [...prevUsers, newUser]);
+    setUsers((prevUsers) => [newUser, ...prevUsers]);
     handleCloseModal();
   };
 
@@ -166,7 +166,7 @@ const UserList = () => {
           <InlineGrid columns={4} gap="600">
             <div
               style={{
-                border: "1.5px dashed #b9b9b9",
+                border: "2px dashed #b9b9b9",
                 borderRadius: "10px",
                 padding: "16px",
                 display: "flex",

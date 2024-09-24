@@ -136,8 +136,9 @@ const PostDetail = () => {
                   alignItems: "center",
                   margin: "20px", // Khoảng cách giữa các comment
                   padding: "15px",
+                  paddingInline: "20px",
                   border: "1px solid #ccc",
-                  borderRadius: "4px",
+                  borderRadius: "20px",
                 }}
               >
                 <Text>{comment.body}</Text>
@@ -146,6 +147,7 @@ const PostDetail = () => {
                   activator={
                     <Button
                       icon={MenuIcon}
+                      variant={'plain'}
                       onClick={() => togglePopoverActive(comment.id)}
                       accessibilityLabel="More actions"
                     />
@@ -160,6 +162,7 @@ const PostDetail = () => {
                       },
                       {
                         content: "Delete",
+                        destructive: true,
                         onAction: () => handleDelete(comment.id),
                       },
                     ]}

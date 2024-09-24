@@ -48,7 +48,8 @@ const UserTodos = () => {
                 )
             );
         } else if (modalType === 'add') {
-            setTodos([...todos, { id: todos.length + 1, userId: parseInt(id), title: title, completed: false }]);
+            const newTodo = { id: todos.length + 1, userId: parseInt(id), title: title, completed: false };
+            setTodos([newTodo, ...todos]);
         }
         handleCloseModal();
     }, [modalType, selectedTodo, title, todos, id, setTodos, handleCloseModal]);
@@ -70,7 +71,7 @@ const UserTodos = () => {
                             <div
                                 style={{
                                     position: 'absolute',
-                                    top: '10px',
+                                    top: '20px',
                                     right: '10px',
                                     zIndex: '10',
                                 }}

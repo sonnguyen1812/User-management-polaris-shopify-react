@@ -13,7 +13,7 @@ import AllAlbums from "./components/navigation/AllAlbums";
 // import AllTodos from "./components/navigation/AllTodos";
 import NotFoundPage from "./pages/NotFoundPage";
 import "@shopify/polaris/build/esm/styles.css";
-import MainLayout from "./components/navigation/MainLayout";
+import MainLayout from "./pages/MainLayout";
 
 function App() {
   return (
